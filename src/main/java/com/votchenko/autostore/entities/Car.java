@@ -2,21 +2,31 @@ package com.votchenko.autostore.entities;
 
 
 import javax.persistence.*;
-import java.io.Serializable;
 
 @Entity
 @Table(name = "tbl_car")
-public class Car implements Serializable {
+public class Car {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id")
+    @Column(name = "id", nullable = false, unique = true)
     private long id;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "carBrand_id", nullable = false)
+    private  CarBrand carBrand;
 
-    @OneToOne
-    @JoinColumn(name = "carBrand_id" )
-    private long carBrand_id;
+    public CarBrand getCarBrand() {
+        return carBrand;
+    }
+
+    public void setCarBrand(CarBrand carBrand) {
+        this.carBrand = carBrand;
+    }
+
+//    @OneToOne
+//    @JoinColumn(name = "carBrand_id" )
+//    private long carBrand_id;
 
     @Column(name = "model")
     private String model;
@@ -30,8 +40,8 @@ public class Car implements Serializable {
     @Column(name = "yearTo")
     private int yearTo;
 
-    public Car(long carBrand_id, String model, String description, int yearFrom, int yearTo) {
-        this.carBrand_id = carBrand_id;
+    public Car(CarBrand carBrand, String model, String description, int yearFrom, int yearTo) {
+        this.carBrand = carBrand;
         this.model = model;
         this.description = description;
         this.yearFrom = yearFrom;
@@ -47,15 +57,7 @@ public class Car implements Serializable {
         this.id = id;
     }
 
-    public long getCarBrand_id() {
-        return carBrand_id;
-    }
-
-    public void setCarBrand_id(long carBrand_id) {
-        this.carBrand_id = carBrand_id;
-    }
-
-    public String getModel() {
+       public String getModel() {
         return model;
     }
 
