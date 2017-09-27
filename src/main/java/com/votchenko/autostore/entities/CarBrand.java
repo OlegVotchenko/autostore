@@ -13,11 +13,14 @@ public class CarBrand {
     @Column(name = "id", unique = true, nullable = false)
     private long id;
 
-    @Column(name = "name")
+    @Column(name = "name", nullable = false)
     private String name;
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "carBrand")
     private Set<Car> carSet = new HashSet<>();
+
+    public CarBrand() {
+    }
 
     public Set<Car> getCarSet() {
         return carSet;
@@ -25,11 +28,6 @@ public class CarBrand {
 
     public void setCarSet(Set<Car> carSet) {
         this.carSet = carSet;
-    }
-
-    public CarBrand(String name) {
-
-        this.name = name;
     }
 
     public long getId() {
@@ -57,13 +55,24 @@ public class CarBrand {
         CarBrand carBrand = (CarBrand) o;
 
         if (id != carBrand.id) return false;
-        return name != null ? name.equals(carBrand.name) : carBrand.name == null;
+        if (name != null ? !name.equals(carBrand.name) : carBrand.name != null) return false;
+        return carSet != null ? carSet.equals(carBrand.carSet) : carBrand.carSet == null;
     }
 
     @Override
     public int hashCode() {
         int result = (int) (id ^ (id >>> 32));
         result = 31 * result + (name != null ? name.hashCode() : 0);
+        result = 31 * result + (carSet != null ? carSet.hashCode() : 0);
         return result;
+    }
+
+    @Override
+    public String toString() {
+        return "CarBrand{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                ", carSet=" + carSet +
+                '}';
     }
 }

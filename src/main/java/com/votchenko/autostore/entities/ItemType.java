@@ -1,6 +1,8 @@
 package com.votchenko.autostore.entities;
 
 import javax.persistence.*;
+import java.util.HashSet;
+import java.util.Set;
 
 @Entity
 @Table(name = "tbl_itemtype")
@@ -8,13 +10,16 @@ public class ItemType {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id", unique = true, nullable = false)
     private long id;
 
     @Column(name = "name")
     private  String name;
 
-    public ItemType(String name) {
-        this.name = name;
+    @OneToMany(fetch =FetchType.LAZY, mappedBy = "itemType")
+    private Set<Item> itemSet = new HashSet<>();
+
+    public ItemType() {
     }
 
     public long getId() {
@@ -33,6 +38,14 @@ public class ItemType {
         this.name = name;
     }
 
+    public Set<Item> getItemSet() {
+        return itemSet;
+    }
+
+    public void setItemSet(Set<Item> itemSet) {
+        this.itemSet = itemSet;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -41,13 +54,24 @@ public class ItemType {
         ItemType itemType = (ItemType) o;
 
         if (id != itemType.id) return false;
-        return name != null ? name.equals(itemType.name) : itemType.name == null;
+        if (name != null ? !name.equals(itemType.name) : itemType.name != null) return false;
+        return itemSet != null ? itemSet.equals(itemType.itemSet) : itemType.itemSet == null;
     }
 
     @Override
     public int hashCode() {
         int result = (int) (id ^ (id >>> 32));
         result = 31 * result + (name != null ? name.hashCode() : 0);
+        result = 31 * result + (itemSet != null ? itemSet.hashCode() : 0);
         return result;
+    }
+
+    @Override
+    public String toString() {
+        return "ItemType{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                ", itemSet=" + itemSet +
+                '}';
     }
 }
